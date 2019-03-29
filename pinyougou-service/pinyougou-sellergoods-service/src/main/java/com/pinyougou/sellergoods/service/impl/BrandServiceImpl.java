@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pinyougou.common.pojo.PageResult;
 import com.pinyougou.mapper.BrandMapper;
 import com.pinyougou.pojo.Brand;
 import com.pinyougou.service.BrandService;
@@ -35,7 +36,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public void deleteAll(Serializable[] ids) {
-
+        brandMapper.deleteAll(ids);
     }
 
     @Override
@@ -60,7 +61,14 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public List<Brand> findByPage(Brand brand, int page, int rows) {
-        return null;
+    public PageResult findByPage(Brand brand, int page, int rows) {
+        PageInfo<Brand> pageInfo = PageHelper.startPage(page, rows)
+                .doSelectPageInfo(new ISelect() {
+                    @Override
+                    public void doSelect() {
+                        brandMapper.findAll(brand);
+                    }
+                });
+        return new PageResult (pageInfo.getTotal(),pageInfo.getList());
     }
 }
