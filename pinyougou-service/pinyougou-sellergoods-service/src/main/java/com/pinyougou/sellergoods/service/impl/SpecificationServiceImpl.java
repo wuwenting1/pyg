@@ -16,6 +16,8 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+
 @Service(interfaceName = "com.pinyougou.service.SpecificationService")
 @Transactional
 public class SpecificationServiceImpl implements SpecificationService {
@@ -67,5 +69,14 @@ public class SpecificationServiceImpl implements SpecificationService {
             }
         });
         return new PageResult(pageInfo.getTotal(),pageInfo.getList());
+    }
+
+    @Override
+    public List<Map<String, Object>> findSpecList() {
+        try{
+            return specificationMapper.findSpecList();
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 }

@@ -20,7 +20,7 @@ public interface ItemCatService {
 	void delete(Serializable id);
 
 	/** 批量删除 */
-	void deleteAll(Serializable[] ids);
+	void deleteAll(Long[] ids);
 
 	/** 根据主键id查询 */
 	ItemCat findOne(Serializable id);
@@ -31,4 +31,5 @@ public interface ItemCatService {
 	/** 多条件分页查询 */
 	List<ItemCat> findByPage(ItemCat itemCat, int page, int rows);
 
+    List<ItemCat> findItemCatByParentId(Long parentId);
 }

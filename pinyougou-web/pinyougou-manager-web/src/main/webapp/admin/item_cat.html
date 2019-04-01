@@ -10,10 +10,21 @@
 	    <link rel="stylesheet" href="/css/style.css"/>
 		<script src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
 	    <script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
-	    
+		<!-- angularJs -->
+		<script src="/plugins/angularjs/angular.min.js"></script>
+		<script src="/js/base.js"></script>
+		<script src="/js/service/baseService.js"></script>
+		<script src="/js/controller/baseController.js"></script>
+		<script src="/js/controller/itemCatController.js"></script>
+
+		<!--引入select2-->
+		<link rel="stylesheet" href="/plugins/select2/select2.css"/>
+		<link rel="stylesheet" href="/plugins/select2/select2-bootstrap.css"/>
+		<script src="/plugins/select2/select2.min.js"></script>
+		<script src="/plugins/select2/angular-select2.js"></script>
 	</head>
 
-	<body class="hold-transition skin-red sidebar-mini" >
+	<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="itemCatController" ng-init="findItemCatByParentId(0);findTypeTemplateList()">
 		<!-- .box-body -->
 		<div class="box-header with-border">
 			<h3 class="box-title">商品分类管理</h3>
@@ -21,9 +32,9 @@
 
 		<div class="box-body">
 			<ol class="breadcrumb">
-				<li><a href="#">顶级分类列表</a></li>
-				<li><a href="#">珠宝</a></li>
-				<li><a href="#">银饰</a></li>
+				<li><a href="#" ng-click="selectList({id:0},1)">顶级分类列表</a></li>
+				<li ng-if="grade > 1"><a href="#" ng-click="selectList({ItemCat_1.parentId},1)">{{ItemCat_1.name}}</a></li>
+				<li ng-if="grade > 2"><a href="#" ng-click="selectList({ItemCat_2.parentId},1)">{{ItemCat_2.name}}</a></li>
 			</ol>
 	
 			<!-- 数据表格 -->
@@ -34,10 +45,13 @@
 					<div class="form-group form-inline">
 						<div class="btn-group">
 							<button type="button" class="btn btn-default" title="新建"
+									ng-click="itemCat={}"
 								data-toggle="modal" data-target="#editModal">
 								<i class="fa fa-file-o"></i> 新建
 							</button>
-							<button type="button" class="btn btn-default" title="删除">
+							<button type="button" class="btn btn-default"
+									ng-click="delete()"
+									title="删除">
 								<i class="fa fa-trash-o"></i> 删除
 							</button>
 							<button type="button" class="btn btn-default" title="刷新">
@@ -64,36 +78,19 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td><input type="checkbox"></td>
-							<td>982</td>
-							<td>吊坠/项链</td>
-							<td>11</td>
+						<tr ng-repeat="entity in dataList">
+							<td><input ng-click="updateSelection($event,entity.id);"
+									type="checkbox"></td>
+							<td>{{entity.id}}</td>
+							<td>{{entity.name}}</td>
+							<td>{{entity.typeId}}</td>
 							<td class="text-center">
-								<button type="button" class="btn bg-olive btn-xs">查询下级</button>
+								<button type="button"
+										ng-if="grade < 3"
+										ng-click="selectList(entity,grade + 1);"
+										class="btn bg-olive btn-xs">查询下级</button>
 								<button type="button" class="btn bg-olive btn-xs"
-									data-toggle="modal" data-target="#editModal">修改</button>
-							</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox"></td>
-							<td>983</td>
-							<td>手镯/手链/脚链</td>
-							<td>11</td>
-							<td class="text-center">
-								<button type="button" class="btn bg-olive btn-xs">查询下级</button>
-								<button type="button" class="btn bg-olive btn-xs"
-									data-toggle="modal" data-target="#editModal">修改</button>
-							</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox"></td>
-							<td>984</td>
-							<td>戒指/耳饰</td>
-							<td>11</td>
-							<td class="text-center">
-								<button type="button" class="btn bg-olive btn-xs">查询下级</button>
-								<button type="button" class="btn bg-olive btn-xs"
+										ng-click="show(entity)"
 									data-toggle="modal" data-target="#editModal">修改</button>
 							</td>
 						</tr>
@@ -121,24 +118,33 @@
 						<tr>
 				      		<td>上级商品分类</td>
 				      		<td>
-				      		   珠宝 >>  银饰
+								<span ng-if="grade > 1">{{ItemCat_1.name}}</span> >>
+								<span ng-if="grade > 2">{{ItemCat_2.name}}</span>
 				      		</td>
 				      	</tr>
 				      	<tr>
 				      		<td>商品分类名称</td>
-				      		<td><input  class="form-control" placeholder="商品分类名称">  </td>
+				      		<td><input  class="form-control"
+										ng-model="itemCat.name"
+										placeholder="商品分类名称">  </td>
 				      	</tr>			  
 				      	<tr>
 				      		<td>类型模板</td>
-				      		<td>	      		
-				      			<input select2 config="options['type_template']" placeholder="商品类型模板" class="form-control" type="text"/>
+				      		<td>
+								<select class="form-control"
+										ng-model="itemCat.typeId"
+										ng-options="i.id as i.name for i in typeTemplateList">
+									<option value="">==选择类型模板==</option>
+								</select>
 				      		</td>		      		      		
 				      	</tr>		      	
 					 </table>				
 					
 				</div>
 				<div class="modal-footer">						
-					<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">保存</button>
+					<button class="btn btn-success" data-dismiss="modal"
+							ng-click="saveOrUpdate()"
+							aria-hidden="true">保存</button>
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
 				</div>
 			  </div>

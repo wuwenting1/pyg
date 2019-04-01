@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+
 @Service(interfaceName = "com.pinyougou.service.BrandService")
 @Transactional
 public class BrandServiceImpl implements BrandService {
@@ -70,5 +72,14 @@ public class BrandServiceImpl implements BrandService {
                     }
                 });
         return new PageResult (pageInfo.getTotal(),pageInfo.getList());
+    }
+
+    @Override
+    public List<Map<String,Object>> findBrandList() {
+        try {
+            return brandMapper.findBrandList();
+        } catch (Exception e) {
+           throw new RuntimeException(e);
+        }
     }
 }

@@ -40,6 +40,10 @@ app.controller('specificationController', function($scope, $controller, baseServ
     $scope.show = function(entity){
        /** 把json对象转化成一个新的json对象 */
        $scope.entity = JSON.parse(JSON.stringify(entity));
+       baseService.sendGet("/specification/findSpecOption?id=" + entity.id).
+       then(function (response) {
+           $scope.entity.specificationOptions = response.data;
+       })
     };
 
     /** 批量删除 */

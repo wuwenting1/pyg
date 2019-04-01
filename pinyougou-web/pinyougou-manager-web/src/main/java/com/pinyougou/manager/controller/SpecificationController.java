@@ -5,9 +5,13 @@ import com.pinyougou.common.pojo.PageResult;
 import com.pinyougou.pojo.Specification;
 import com.pinyougou.service.SpecificationService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("specification")
@@ -36,5 +40,9 @@ public class SpecificationController {
             e.printStackTrace();
         }
         return false;
+    }
+    @GetMapping("findSpecList")
+    public List<Map<String,Object>> findSpecList(){
+        return specificationService.findSpecList();
     }
 }
