@@ -19,37 +19,29 @@ app.controller('goodsController', function($scope, $controller, baseService){
     };
 
     /** 添加或修改 */
-    $scope.saveOrUpdate = function(){
-        var url = "save";
-        if ($scope.entity.id){
-            url = "update";
-        }
-        /** 发送post请求 */
-        baseService.sendPost("/goods/" + url, $scope.entity)
+    $scope.updateStatus = function(status){
+        baseService.sendGet("/goods/updateStatus?ids=" + $scope.ids + "&status=" + status)
             .then(function(response){
                 if (response.data){
                     /** 重新加载数据 */
                     $scope.reload();
+                    //清空ids
+                    $scope.ids = [];
                 }else{
                     alert("操作失败！");
                 }
             });
     };
 
-    /** 显示修改 */
-    $scope.show = function(entity){
-       /** 把json对象转化成一个新的json对象 */
-       $scope.entity = JSON.parse(JSON.stringify(entity));
-    };
-
     /** 批量删除 */
     $scope.delete = function(){
         if ($scope.ids.length > 0){
-            baseService.deleteById("/goods/delete", $scope.ids)
+            baseService.sendGet("/goods/delete?ids="+ $scope.ids)
                 .then(function(response){
                     if (response.data){
                         /** 重新加载数据 */
                         $scope.reload();
+                        $scope.ids = [];
                     }else{
                         alert("删除失败！");
                     }

@@ -1,5 +1,6 @@
 package com.pinyougou.service;
 
+import com.pinyougou.common.pojo.PageResult;
 import com.pinyougou.pojo.Content;
 import java.util.List;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public interface ContentService {
 	List<Content> findAll();
 
 	/** 多条件分页查询 */
-	List<Content> findByPage(Content content, int page, int rows);
+	PageResult findByPage(Content content, int page, int rows);
 
+    List<Content> findContextByCategoryId(Long categoryId,String status);
 }

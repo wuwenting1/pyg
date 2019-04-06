@@ -5,7 +5,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
     $controller('baseController',{$scope:$scope});
 
     /** 查询条件对象 */
-    $scope.searchEntity = {};
+    $scope.searchEntity = {status:"0"};
     /** 分页查询(查询条件) */
     $scope.search = function(page, rows){
         baseService.findByPage("/seller/findByPage", page,
@@ -17,7 +17,16 @@ app.controller('sellerController', function($scope, $controller, baseService){
                 $scope.paginationConf.totalItems = response.data.total;
             });
     };
-
+    /** 修改状态吗 */
+    $scope.updateStatus = function (sellerId,status) {
+        baseService.sendGet("/seller/updateStatus?sellerId="+sellerId + "&status=" + status).then(function (response) {
+            if (response.data){
+                $scope.reload();
+            }else {
+                alert("操作失败!")
+            }
+        });
+    };
     /** 添加或修改 */
     $scope.saveOrUpdate = function(){
         var url = "save";

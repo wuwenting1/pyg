@@ -10,6 +10,7 @@
        http://www.springframework.org/schema/mvc/spring-mvc.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <context:property-placeholder location="classpath:application.properties"/>
     <!-- 开启组件扫描 -->
     <context:component-scan
             base-package="com.pinyougou.manager.controller"/>
@@ -31,4 +32,12 @@
     <dubbo:application name="pinyougou-manager-web"/>
     <dubbo:registry protocol="zookeeper" address="192.168.12.131:2181"/>
     <dubbo:annotation package="com.pinyougou.manager.controller"/>
+
+    <!--配置文件上传解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--设置文件上传默认编码-->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!--设置文件上传的大小 2MB：2*1024*1024-->
+        <property name="maxUploadSize" value="4194304"/>
+    </bean>
 </beans>
