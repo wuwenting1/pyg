@@ -32,5 +32,5 @@ public interface ContentService {
 	/** 多条件分页查询 */
 	PageResult findByPage(Content content, int page, int rows);
 
-    List<Content> findContextByCategoryId(Long categoryId,String status);
+    List<Content> findContextByCategoryId(Long categoryId);
 }

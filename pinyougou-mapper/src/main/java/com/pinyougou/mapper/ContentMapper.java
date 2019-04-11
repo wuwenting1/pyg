@@ -15,6 +15,6 @@ import java.util.List;
  */
 public interface ContentMapper extends Mapper<Content>{
 
-    @Select("select * from tb_content where status = #{status} and category_id = #{categoryId} order by sort_order")
-    List<Content> findContextByCategoryId(@Param("categoryId") Long categoryId, @Param("status")String status);
+    @Select("select * from tb_content where status = 1 and category_id = #{categoryId} order by sort_order")
+    List<Content> findContextByCategoryId(Long categoryId);
 }

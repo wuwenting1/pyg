@@ -72,8 +72,8 @@
 							<form action="" class="sui-form form-inline">
 								<!--searchAutoComplete-->
 								<div class="input-append">
-									<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" />
-									<button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+									<input type="text" ng-model="keywords" class="input-error input-xxlarge" />
+									<button class="sui-btn btn-xlarge btn-danger" ng-click="search()" type="button">搜索</button>
 								</div>
 							</form>
 						</div>
@@ -526,11 +526,12 @@
 				<div class="yui3-u Center banerArea">
 
 					<!--banner轮播-->
-					<div id="myCarousel" data-ride="carousel" data-interval="4000" class="sui-carousel slide">
+					<div id="myCarousel" data-ride="carousel" data-interval="2000" class="sui-carousel slide">
 					  <ol class="carousel-indicators">
 					    <!-- 下面圆点控制 -->
 					    <li data-target="#myCarousel" ng-repeat="c in contentList"
-							data-slide-to="{{$index}}}" class="{{$index == 0 ? 'active':''}}"></li>
+							data-slide-to="{{$index}}"
+							class="{{$index == 0 ? 'active' : ''}}"></li>
 					  </ol>
 					  <div class="carousel-inner">
 					    <div ng-repeat="c in contentList" class="{{$index == 0 ? 'active':''}} item">

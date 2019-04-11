@@ -10,6 +10,7 @@ import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import java.io.Serializable;
@@ -24,10 +25,13 @@ import java.util.Arrays;
 public class ContentServiceImpl implements ContentService {
 	@Autowired
 	private ContentMapper contentMapper;
+	@Autowired
+	private RedisTemplate redisTemplate;
 	/** 添加方法 */
 	public void save(Content content){
 		try {
 			contentMapper.insertSelective(content);
+			redisTemplate.delete("content");
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
@@ -37,6 +41,7 @@ public class ContentServiceImpl implements ContentService {
 	public void update(Content content){
 		try {
 			contentMapper.updateByPrimaryKeySelective(content);
+			redisTemplate.delete("content");
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
@@ -46,6 +51,7 @@ public class ContentServiceImpl implements ContentService {
 	public void delete(Serializable id){
 		try {
 			contentMapper.deleteByPrimaryKey(id);
+			redisTemplate.delete("content");
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
@@ -62,6 +68,7 @@ public class ContentServiceImpl implements ContentService {
 			criteria.andIn("id", Arrays.asList(ids));
 			// 根据示范对象删除
 			contentMapper.deleteByExample(example);
+			redisTemplate.delete("content");
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
@@ -102,8 +109,28 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
-	public List<Content> findContextByCategoryId(Long categoryId,String status) {
-		return contentMapper.findContextByCategoryId(categoryId,status);
-	}
+	public List<Content> findContextByCategoryId(Long categoryId) {
+		List<Content> contentList = null;
+		try {
+			try {
+				contentList = (List<Content>)redisTemplate.boundValueOps("content").get();
+				if (contentList != null && contentList.size() > 0){
+					System.out.println("=====从redis数据库获取===========");
+					return contentList;
+				}
+			}catch (Exception e){
 
+			}
+			contentList = contentMapper.findContextByCategoryId(categoryId);
+			try {
+				System.out.println("========写进redis数据库=======");
+				redisTemplate.boundValueOps("content").set(contentList);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			return contentList;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

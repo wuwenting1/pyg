@@ -21,7 +21,7 @@ public class ContentController {
 	/** 通过广告分类id查询 */
 	@GetMapping("/findContentByCategoryId")
 	public List<Content> findContentByCategoryId(Long categoryId){
-		return contentService.findContextByCategoryId(categoryId,"1");
+		return contentService.findContextByCategoryId(categoryId);
 	}
 	/** 查询全部方法 */
 	@GetMapping("/findAll")
