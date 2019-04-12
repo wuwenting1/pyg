@@ -4,6 +4,8 @@ import com.pinyougou.common.pojo.PageResult;
 import com.pinyougou.pojo.Goods;
 import java.util.List;
 import java.io.Serializable;
+import java.util.Map;
+
 /**
  * GoodsService 服务接口
  * @date 2019-03-28 16:27:34
@@ -33,4 +35,6 @@ public interface GoodsService {
 	PageResult findByPage(Goods goods, int page, int rows);
 
     void updateStatus(String columnName ,Long[] ids, String status);
+
+    Map<String,Object> getGoods(Long goodsId);
 }

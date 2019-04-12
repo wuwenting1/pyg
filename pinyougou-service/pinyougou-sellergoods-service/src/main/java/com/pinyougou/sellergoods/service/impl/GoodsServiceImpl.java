@@ -1,6 +1,6 @@
 package com.pinyougou.sellergoods.service.impl;
 
-import java.util.Date;
+import java.util.*;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
@@ -9,17 +9,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.common.pojo.PageResult;
 import com.pinyougou.mapper.*;
-import com.pinyougou.pojo.Goods;
-import com.pinyougou.pojo.Item;
-import com.pinyougou.pojo.ItemCat;
-import com.pinyougou.pojo.TypeTemplate;
+import com.pinyougou.pojo.*;
 import com.pinyougou.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 @Service(interfaceName = "com.pinyougou.service.GoodsService")
 @Transactional
@@ -72,7 +68,7 @@ public class GoodsServiceImpl implements GoodsService {
                 item.setPrice(goods.getPrice());
                 item.setIsDefault("1");
                 item.setNum(9999);
-                item.setStatus("1");
+                item.setStatus("0");
                 item.setSpec("{ }");
                 //设置其他属性
                 setItemInfo(item,goods);
@@ -154,6 +150,47 @@ public class GoodsServiceImpl implements GoodsService {
     public void updateStatus(String columnName, Long[] ids, String status) {
         try {
             goodsMapper.updateStatus(columnName,ids,status);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getGoods(Long goodsId) {
+        try {
+            Map<String,Object> dataModel = new HashMap<>();
+            //根据主键id查询goods
+            Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
+            //根据主键id查询goodsDesc
+            GoodsDesc goodsDesc = goodsDescMapper.selectByPrimaryKey(goodsId);
+            dataModel.put("goods",goods);
+            dataModel.put("goodsDesc",goodsDesc);
+            //查询item
+            /** 查询SKU数据 */
+            Example example = new Example(Item.class) ;
+            /** 查询条件对象 */
+            Example.Criteria criteria = example.createCriteria();
+            /** 状态码为：1 */
+            criteria.andEqualTo("status", "1");
+            /** 条件: SPU ID */
+            criteria.andEqualTo("goodsId", goodsId);
+            /** 按是否默认降序(保证第一个为默认) */
+            example.orderBy("isDefault").desc();
+            /** 根据条件查询SKU商品数据 */
+            List<Item> itemList = itemMapper.selectByExample(example);
+            //需要将itemList转为Json字符串
+            dataModel.put("itemList",JSON.toJSONString(itemList));
+            //查询商品分类
+            //一级分类
+            ItemCat itemCat1 = itemCatMapper.selectByPrimaryKey(goods.getCategory1Id());
+            dataModel.put("itemCat1",itemCat1);
+            //二级分类
+            ItemCat itemCat2 = itemCatMapper.selectByPrimaryKey(goods.getCategory2Id());
+            dataModel.put("itemCat2",itemCat2);
+            //三级分类
+            ItemCat itemCat3 = itemCatMapper.selectByPrimaryKey(goods.getCategory3Id());
+            dataModel.put("itemCat3",itemCat3);
+            return dataModel;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
