@@ -11,7 +11,7 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
     <context:component-scan
-            base-package="com.pinyougou.search.controller"/>
+            base-package="com.pinyougou.search"/>
     <!-- 开启MVC注解驱动 -->
     <mvc:annotation-driven>
         <!-- 配置消息转换 -->
@@ -29,6 +29,6 @@
     
     <dubbo:application name="pinyougou-search-web"/>
     <dubbo:registry protocol="zookeeper" address="192.168.12.131:2181"/>
-    <dubbo:annotation package="com.pinyougou.search.controller"/>
+    <dubbo:annotation package="com.pinyougou.search"/>
 
 </beans>

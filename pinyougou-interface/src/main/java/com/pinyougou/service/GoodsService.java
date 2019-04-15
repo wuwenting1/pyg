@@ -2,6 +2,8 @@ package com.pinyougou.service;
 
 import com.pinyougou.common.pojo.PageResult;
 import com.pinyougou.pojo.Goods;
+import com.pinyougou.pojo.Item;
+
 import java.util.List;
 import java.io.Serializable;
 import java.util.Map;
@@ -37,4 +39,6 @@ public interface GoodsService {
     void updateStatus(String columnName ,Long[] ids, String status);
 
     Map<String,Object> getGoods(Long goodsId);
+
+	List<Item> findItemByGoodsId(Long[] goodsIds);
 }

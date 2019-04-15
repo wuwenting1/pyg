@@ -195,4 +195,10 @@ public class GoodsServiceImpl implements GoodsService {
             throw new RuntimeException(e);
         }
     }
+    public List<Item> findItemByGoodsId(Long[] goodsIds){
+        Example example = new Example(Item.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("goodsId", Arrays.asList(goodsIds));
+        return itemMapper.selectByExample(example);
+    }
 }
