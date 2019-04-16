@@ -12,5 +12,26 @@
   <properties> 
     <!-- 覆盖父工程中的port属性 -->  
     <port>9107</port> 
-  </properties> 
+  </properties>
+  <dependencies>
+    <!-- Spring-Security -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+    </dependency>
+    <!-- spring-security-cas -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-cas</artifactId>
+    </dependency>
+    <!-- cas-client-core -->
+    <dependency>
+      <groupId>org.jasig.cas.client</groupId>
+      <artifactId>cas-client-core</artifactId>
+    </dependency>
+  </dependencies>
 </project>
